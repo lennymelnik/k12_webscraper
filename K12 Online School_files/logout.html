@@ -1,0 +1,64 @@
+
+<!-- saved from url=(0096)https://learning.k12.com/shared/k12/html/logout.html?forward=https://learning.k12.com/d2l/logout -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>D2L Logout</title>
+		<script src="./jquery-2.2.4.min.js.download" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous">
+		</script>
+	<script>function lti_launch( vars ) { var query = ''; for(var key in vars) { if(query.length == 0) { query += '?' + key + '=' + encodeURIComponent(vars[key]); } else { query += '&' + key + '=' + encodeURIComponent(vars[key]); } } location.replace( '/d2l/customization/pearsonlti/6606/Launch' + query ); }</script><script src="./MathML.js.download"></script><script>document.addEventListener('DOMContentLoaded', function() { D2LMathML.DesktopInit('https://s.brightspace.com/lib/mathjax/2.6.1/MathJax.js?config=MML_HTMLorMML','https://s.brightspace.com/lib/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML%2cSafe'); });</script><script>window.addEventListener('message', function(event) { 
+					if( !event.data ) {
+						console.debug( 'Empty event received' );
+						return;
+					}
+					var params = JSON.parse(event.data);
+					if( !params.subject || params.subject !== 'lti.frameResize') {
+						console.debug( 'Message subject was not lti.frameResize' );
+						return;
+					}
+			
+					const MAX_FRAME_HEIGHT = 10000
+					if( !params.height || params.height < 1 || params.height > MAX_FRAME_HEIGHT ) {
+						console.warn( 'Invalid height value received, aborting' );
+						return;
+					}
+					var el = document.getElementsByTagName( 'iframe' );
+					for ( var i=0; i < el.length; i++ ) {
+						if( el[i].contentWindow === event.source ) {
+							el[i].style.height = params.height + 'px';
+                            el[i].style.width = '100%';
+							console.info( 'Setting iFrame height to ' + params.height );
+                            console.info( 'Setting iFrame width to 100%' );
+						}
+					}
+				});</script></head>
+	
+	<body onload="javascript:iframeload();"> 
+		<iframe id="iframe" height="500px" width="500px" src="./logout(1).html"></iframe>
+		<script>
+			/*<![CDATA[*/			
+			function iframeload(){		
+				var url = window.location.href;
+				var forward = '?forward=';
+				url = url.substr(url.indexOf(forward) + forward.length);
+				$("#iframe").load(function(){
+					try{
+						var elements = $('#iframe').contents().find('#d2l_form').serialize();					
+						$.post(url, elements)
+						.always(
+							function() {
+								if(parent) {
+									parent.postMessage("auth_complete", "*");
+								}
+							}
+						);
+					}catch(err){
+						if(parent) {
+							parent.postMessage("auth_complete", "*");
+						}
+					}
+				});
+				$("#iframe").attr("src", url);
+			}
+			/*]]>*/
+		</script>
+	
+</body></html>

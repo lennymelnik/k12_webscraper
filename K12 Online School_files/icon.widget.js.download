@@ -1,0 +1,1 @@
+define(["underscore","jquery","base.view","base.model"],function(e,t,n,r){"use strict";var i=n.extend({template:"icon.widget.hbs",simpleWidget:!0,tooltipTarget:"i.icon",initialize:function(){n.prototype.initialize.apply(this,arguments),this.model=new r,this.listenTo(this.model,"change",this.render)}});return i});

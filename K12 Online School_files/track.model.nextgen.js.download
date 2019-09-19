@@ -1,0 +1,1 @@
+define(["backbone","underscore","./trackalp.model"],function(e,t,n){"use strict";var r=e.Model.extend({defaults:{id:null,events:[]},initialize:function(e){var t=[],r=new n(e);t.push(r),this.set("events",t)},triggerTracking:function(e,n){t.each(this.get("events"),function(t){t.triggerTrack(e,n)})}});return r});

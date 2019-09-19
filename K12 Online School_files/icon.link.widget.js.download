@@ -1,0 +1,1 @@
+define(["underscore","jquery","../link.widget"],function(e,t,n){"use strict";var r=n.extend({afterRender:function(){var e=this.model.getDeep("config.tag"),t=this.$el.find(".link-text");this.model.getDeep("config.position")==="right"?this.$el.prepend(t):this.$el.append(t),e&&this.$el.wrapInner("<"+e+"></"+e+">")}});return r});
