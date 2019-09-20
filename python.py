@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import userpass
+import time
 import numpy as np
 import pandas as pd
 
@@ -31,36 +32,31 @@ def check_exists_by_xpath(xpath):
         return False
     return True
 pressNext = '//*[@id="components"]/div/div[1]/div/div[1]/form/div[3]/div/span[2]'
+
 def recursive():
-    driver.implicitly_wait(5)
-    g = True
-    i = 1
-    if (driver.find_element_by_xpath('//*[@id="components"]/div/div[2]/div/div[1]/div/div[3]/table/tbody/tr/td').get_property('class') == "empty-message"):
+ for i in range(20):
+        g = True
+        i = 1
+        if(check_exists_by_xpath('//*[@id="components"]/div/div[2]/div/div[1]/div/div[3]/table/tbody/tr/td[1]/div/div[2]/div/div/a') == True):
+            while (g == True):  # What happens per day
+                tbodyXpath = '//*[@id="components"]/div/div[2]/div/div[1]/div/div[3]/table/tbody/tr[' + str(
+                    i) + ']/td[1]/div/div[2]/div/div/a'
+                assignmentName = '//*[@id="components"]/div/div[2]/div/div[1]/div/div[3]/table/tbody/tr[' + str(
+                    i) + ']/td[2]/a'
+                if (check_exists_by_xpath(tbodyXpath) == True):
+                    course.append(driver.find_element_by_xpath(tbodyXpath).get_property('title'))
+                    assignment.append(driver.find_element_by_xpath(assignmentName).get_property('title'))
+                    dateTime = driver.find_element_by_xpath(pressNext).get_property('href')
+                    due.append(dateTime)
+                    print(i, course, assignment)
+                    i = i + 1
+                elif (check_exists_by_xpath(tbodyXpath) == False):  # if no more assignments
+                    g = False
         driver.find_element_by_xpath(pressNext).click()
-    else:
-        while (g == True):  # What happens per day
-            tbodyXpath = '//*[@id="components"]/div/div[2]/div/div[1]/div/div[3]/table/tbody/tr[' + str(
-                i) + ']/td[1]/div/div[2]/div/div/a'
-            assignmentName = '//*[@id="components"]/div/div[2]/div/div[1]/div/div[3]/table/tbody/tr[' + str(
-                i) + ']/td[2]/a'
-            if (check_exists_by_xpath(tbodyXpath) == True):
-                course.append(driver.find_element_by_xpath(tbodyXpath).get_property('title'))
-                assignment.append(driver.find_element_by_xpath(assignmentName).get_property('title'))
-                dateTime = driver.find_element_by_xpath(pressNext).get_property('href')
-                due.append(dateTime)
-                print(i, course, assignment)
-                i = i + 1
-            elif (check_exists_by_xpath(tbodyXpath) == False):
-                g = False
-        driver.find_element_by_xpath(pressNext).click()
-
-    print("done")
-
-    recursive()
-
+        time.sleep(1)
 recursive()
-courseArray = np.asarray(course).reshape(len(course,1))
-assignmentArray = np.asarray(assignment).reshape(len(course,1))
-dueArray = np.asarray(due).reshape(len(course,1))
+courseArray = np.asarray(course).reshape(len(course),1)
+assignmentArray = np.asarray(assignment).reshape(len(course),1)
+dueArray = np.asarray(due).reshape(len(course),1)
 print(courseArray,assignmentArray)
 
