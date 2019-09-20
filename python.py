@@ -1,12 +1,20 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+from datetime import datetime
 import userpass
 import time
 import numpy as np
 import pandas as pd
+import xlwt
+from tempfile import TemporaryFile
+book = xlwt.Workbook()
+sheet1 = book.add_sheet('sheet1')
+
+
 
 driver = webdriver.Chrome("E:\Github\chromedriver")
 driver.maximize_window()
+full = []
 course=[]
 assignment=[]
 due=[]
@@ -43,20 +51,25 @@ def recursive():
                     i) + ']/td[1]/div/div[2]/div/div/a'
                 assignmentName = '//*[@id="components"]/div/div[2]/div/div[1]/div/div[3]/table/tbody/tr[' + str(
                     i) + ']/td[2]/a'
+                DueTime = '/html/body/div/section/div[3]/div[2]/div[4]/div[2]/div[2]/div/div[2]/div/div[1]/div/div[3]/table/tbody/tr[' + str(
+                    i) + ']/td[3]/div/div/span'
+                DueDate = '/html/body/div/section/div[3]/div[2]/div[4]/div[2]/div[2]/div/div[1]/div/div[1]/form/div[2]/div/p'
                 if (check_exists_by_xpath(tbodyXpath) == True):
-                    course.append(driver.find_element_by_xpath(tbodyXpath).get_property('title'))
-                    assignment.append(driver.find_element_by_xpath(assignmentName).get_property('title'))
+                    courseCurrent = driver.find_element_by_xpath(tbodyXpath).get_property('title')
+                    assignmentCurrent = driver.find_element_by_xpath(assignmentName).get_property('title').replace(',','')
+                    assignmentDueTime = driver.find_element_by_xpath(DueTime).text
+                    if "Due " in assignmentDueTime:
+                        assignmentDueTime = assignmentDueTime.replace('Due ','')
+                    assignmentDueDate = driver.find_element_by_xpath(DueDate).text
+                    assignmentDueDate = str(datetime.strptime(assignmentDueDate, '%B %d, %Y'))[0:10]
+                    full.append([courseCurrent, assignmentCurrent,assignmentDueDate,assignmentDueTime])
                     dateTime = driver.find_element_by_xpath(pressNext).get_property('href')
                     due.append(dateTime)
-                    print(i, course, assignment)
                     i = i + 1
                 elif (check_exists_by_xpath(tbodyXpath) == False):  # if no more assignments
                     g = False
         driver.find_element_by_xpath(pressNext).click()
         time.sleep(1)
 recursive()
-courseArray = np.asarray(course).reshape(len(course),1)
-assignmentArray = np.asarray(assignment).reshape(len(course),1)
-dueArray = np.asarray(due).reshape(len(course),1)
-print(courseArray,assignmentArray)
 
+np.savetxt('out.csv', (np.array(full)), delimiter=",", fmt = '%s',header='Description,Subject,Start Date, End Time')
