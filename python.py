@@ -9,6 +9,8 @@ import xlwt
 from tempfile import TemporaryFile
 book = xlwt.Workbook()
 sheet1 = book.add_sheet('sheet1')
+import requests
+
 
 
 
@@ -62,6 +64,12 @@ def recursive():
                         assignmentDueTime = assignmentDueTime.replace('Due ','')
                     assignmentDueDate = driver.find_element_by_xpath(DueDate).text
                     assignmentDueDate = str(datetime.strptime(assignmentDueDate, '%B %d, %Y'))[0:10]
+                    querystring = {"name": assignmentName, "desc": courseCurrent, "pos": "bottom","due":assignmentDueDate,
+                                   "idList": "5d828f95517f922a4c16833d", "keepFromSource": "all", "key": keys.apiKey,
+                                   "token": keys.tokenKey}
+
+                    response = requests.request("POST", url, params=querystring)
+                    print(response.text)
                     full.append([courseCurrent, assignmentCurrent,assignmentDueDate,assignmentDueTime])
                     dateTime = driver.find_element_by_xpath(pressNext).get_property('href')
                     due.append(dateTime)
