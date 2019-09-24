@@ -1,20 +1,14 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from datetime import datetime
-import userpass
 import time
 import numpy as np
-import pandas as pd
-import xlwt
-from tempfile import TemporaryFile
-book = xlwt.Workbook()
-sheet1 = book.add_sheet('sheet1')
 import requests
+import keys
 
 
 
-
-driver = webdriver.Chrome("E:\Github\chromedriver")
+driver = webdriver.Chrome("chromedriver")
 driver.maximize_window()
 
 full = []
@@ -28,8 +22,8 @@ username = driver.find_element_by_name('username')
 password = driver.find_element_by_name('password')
 login = driver.find_element_by_id('c97')
 
-username.send_keys("leonardmelnik")
-password.send_keys(userpass.passWORD)
+username.send_keys(keys.username)
+password.send_keys(keys.password)
 login.click()
 driver.implicitly_wait(5)
 driver.find_element_by_link_text('MY SCHEDULE').click()
@@ -72,7 +66,7 @@ def recursive():
 
                     #Trello API
                     querystring = {"name": assignmentName, "desc": courseCurrent, "pos": "bottom","due":assignmentDueDate,
-                                   "idList": "5d828f95517f922a4c16833d", "keepFromSource": "all", "key": keys.apiKey,
+                                   "idList": keys.listId, "keepFromSource": "all", "key": keys.apiKey,
                                    "token": keys.tokenKey}
                     #Push info to api
                     response = requests.request("POST", url, params=querystring)
