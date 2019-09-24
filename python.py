@@ -6,9 +6,8 @@ import numpy as np
 import requests
 import keys
 
-
-
 driver = webdriver.Chrome("chromedriver")
+
 driver.maximize_window()
 
 full = []
@@ -18,13 +17,13 @@ driver.get("https://login-learn.k12.com/#schedule")
 driver.implicitly_wait(5)
 
 username = driver.find_element_by_name('username')
-
 password = driver.find_element_by_name('password')
 login = driver.find_element_by_id('c97')
 
 username.send_keys(keys.username)
 password.send_keys(keys.password)
 login.click()
+
 driver.implicitly_wait(5)
 driver.find_element_by_link_text('MY SCHEDULE').click()
 driver.implicitly_wait(5)
