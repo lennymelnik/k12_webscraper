@@ -6,7 +6,8 @@ import numpy as np
 import requests
 import keys
 
-driver = webdriver.Chrome("chromedriver")
+url = "https://api.trello.com/1/cards"
+driver = webdriver.Chrome("E:/Github/chromedriver.exe")
 
 driver.maximize_window()
 
