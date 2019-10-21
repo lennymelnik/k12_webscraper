@@ -7,7 +7,7 @@ import requests
 import keys
 
 url = "https://api.trello.com/1/cards"
-driver = webdriver.Chrome("E:/Github/chromedriver.exe")
+driver = webdriver.Chrome("D:\chromedriver.exe")
 
 driver.maximize_window()
 
@@ -65,7 +65,7 @@ def recursive():
                     assignmentDueDate = str(datetime.strptime(assignmentDueDate, '%B %d, %Y'))[0:10]
 
                     #Trello API
-                    querystring = {"name": assignmentName, "desc": courseCurrent, "pos": "bottom","due":assignmentDueDate,
+                    querystring = {"name": assignmentCurrent, "desc": courseCurrent, "pos": "bottom","due":assignmentDueDate,
                                    "idList": keys.listId, "keepFromSource": "all", "key": keys.apiKey,
                                    "token": keys.tokenKey}
                     #Push info to api
@@ -77,7 +77,7 @@ def recursive():
 
 
                     dateTime = driver.find_element_by_xpath(pressNext).get_property('href')
-                    due.append(dateTime)
+                    
 
                     i = i + 1
                 elif (check_exists_by_xpath(tbodyXpath) == False):  # if no more assignments
